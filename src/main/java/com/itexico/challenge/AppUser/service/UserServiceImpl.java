@@ -1,42 +1,62 @@
 package com.itexico.challenge.AppUser.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
-import com.itexico.challenge.AppUser.model.User;
-import com.itexico.challenge.AppUser.repository.UserRepository;
+import com.itexico.challenge.AppUser.dao.UserDAO;
+import com.itexico.challenge.AppUser.dto.UserDTO;
+import com.itexico.challenge.AppUser.entity.User;
 
-@Component
-public class UserServiceImpl implements UserService{
+@Service
+public class UserServiceImpl implements UserService {
 
 	@Autowired
-	private UserRepository userRepository;
+	@Qualifier("userDAOJPARepositoryImpl")
+	UserDAO userDAOJPA;
+
+	@Autowired
+	@Qualifier("userDAOHibernateImpl")
+	UserDAO userDAOHibernate;
+
+	@Autowired
+	UserDTO userDTO; 
 	
 	@Override
-	public User updateUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean updateUser(User updates, int id) {
+		// boolean isUpdated = userDAOJPA.updateUser(updates, id);
+		boolean isUpdated = userDAOHibernate.updateUser(updates, id);
+		return isUpdated;
 	}
 
 	@Override
-	public List<User> getUsers() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<User> getActiveUsers() {
+		// return userDAOJPA.getActiveUsers();
+		// return userDAOHibernate.getActiveUsers();
+		
+		List<User> users = userDAOHibernate.getActiveUsers();
+		userDTO.serviceToObjectActiveUsers(users);
+		return users;
 	}
 
 	@Override
 	public User getUser(int id) {
-		Optional<User> user = userRepository.findById(id);
-		return user.get();
+		// User user = userDAOJPA.getUser(id);
+		User user = userDAOHibernate.getUser(id);
+		
+		if (user != null) {
+			userDTO.serviceToObjectUser(user);
+		}
+		return user;
 	}
 
 	@Override
 	public User createUser(User user) {
-		userRepository.save(user);
-		return user;
+		// userDAOJPA.createUser(user);
+		//userDAOHibernate.createUser(user);
+		return userDAOHibernate.createUser(user);
 	}
 
 }

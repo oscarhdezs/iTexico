@@ -1,10 +1,10 @@
-package com.itexico.challenge.AppUser.service;
+package com.itexico.challenge.AppUser.dao;
 
 import java.util.List;
 
 import com.itexico.challenge.AppUser.entity.User;
 
-public interface UserService {
+public interface UserDAO {
 
 	public boolean updateUser(User updates,int id); 
 	public List<User> getActiveUsers();
