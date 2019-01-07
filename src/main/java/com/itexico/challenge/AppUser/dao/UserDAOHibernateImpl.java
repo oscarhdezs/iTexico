@@ -32,7 +32,7 @@ public class UserDAOHibernateImpl implements UserDAO {
 			isUpdated = userUtility.needToUpdate(updates, user);
 		}
 		if (isUpdated) {
-			session.update(user);
+			session.saveOrUpdate(user);
 		}
 		return isUpdated;
 	}
